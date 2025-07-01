@@ -1,17 +1,33 @@
 import instaloader
 import os
 from pydub import AudioSegment
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def download_instagram_post(url):
-    L = instaloader.Instaloader(dirname_pattern="downloads", save_metadata=False, post_metadata_txt_pattern="")
     shortcode = url.split("/")[-2]
-    post = instaloader.Post.from_shortcode(L.context, shortcode)
-    L.download_post(post, target=shortcode)
+    download_dir = f"/tmp/{shortcode}"
+    os.makedirs(download_dir, exist_ok=True)
 
-    media_path = f"downloads/{shortcode}/{shortcode}.mp4"
+    L = instaloader.Instaloader(dirname_pattern=download_dir, save_metadata=False)
+    
+    try:
+        L.login(os.getenv("IG_USERNAME"), os.getenv("IG_PASSWORD"))
+    except:
+        pass  # login bo‘lmasa davom etadi
+
+    try:
+        post = instaloader.Post.from_shortcode(L.context, shortcode)
+        L.download_post(post, target=shortcode)
+    except Exception as e:
+        return None, None
+
+    video_path = f"{download_dir}/{shortcode}.mp4"
     audio_path = None
 
-    if os.path.exists(media_path):
-        audio_path = f"downloads/{shortcode}/{shortcode}.mp3"
-        AudioSegment.from_file(media_path).export(audio_path, format="mp3")
-    return media_path, audio_path
+    if os.path.exists(video_path):
+        audio_path = f"{download_dir}/{shortcode}.mp3"
+        AudioSegment.from_file(video_path).export(audio_path, format="mp3")
+
+    return video_path if os.path.exists(video_path) else None, audio_path
