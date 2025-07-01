@@ -1,0 +1,37 @@
+# Python cache fayllari
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# OS maxsus fayllari
+.DS_Store
+Thumbs.db
+
+# IDE fayllari
+.vscode/
+.idea/
+
+# Enviroment konfiguratsiyasi
+.env
+
+# Yuklab olingan media fayllar
+downloads/
+media/
+audio/
+temp_audio.ogg
+log.txt
+
+# yt-dlp kesh
+.ytdlp/
+
+# Instaloader metadata
+*.json.xz
+*.txt
+*.html
